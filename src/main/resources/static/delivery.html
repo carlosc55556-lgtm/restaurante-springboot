@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedido Delivery</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    select, input, textarea { width:100%; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
+    button { background:#27ae60; color:#fff; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; }
+    button:hover { background:#1e8449; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>🚚 Pedido Delivery</h1>
+    </header>
+
+    <h2>Haz tu pedido</h2>
+    <p>Selecciona tus platos y recibe tu pedido en casa.</p>
+
+    <form id="deliveryForm" action="/delivery/pedido" method="post">
+      <label>Dirección de entrega:</label>
+      <input type="text" name="direccion" placeholder="Tu dirección completa" required>
+
+      <label>Teléfono de contacto:</label>
+      <input type="text" name="telefono" placeholder="999999999" required>
+
+      <label>Selecciona tu plato:</label>
+      <select name="plato" required>
+        <option value="">-- Selecciona un plato --</option>
+        <option value="Lomo Saltado">Lomo Saltado</option>
+        <option value="Ceviche">Ceviche</option>
+        <option value="Arroz Chaufa">Arroz Chaufa</option>
+        <option value="Seco de Res">Seco de Res</option>
+        <option value="Tallarin Saltado">Tallarin Saltado</option>
+      </select>
+
+      <label>Cantidad:</label>
+      <input type="number" name="cantidad" min="1" required>
+
+      <label>Método de pago:</label>
+      <select name="pago" required>
+        <option value="EFECTIVO">Efectivo</option>
+        <option value="TARJETA">Tarjeta</option>
+        <option value="YAPE">Yape</option>
+        <option value="PLIN">Plin</option>
+      </select>
+
+      <button type="submit">Confirmar Pedido</button>
+    </form>
+
+    <h2>Pedidos Registrados</h2>
+    <ul id="listaPedidos"></ul>
+
+    <p class="registro-link">
+      <a href="cliente.html">⬅ Volver al Panel Cliente</a>
+    </p>
+  </div>
+
+  <script>
+    async function cargarPedidos() {
+      const res = await fetch('/delivery');
+      const pedidos = await res.json();
+      const lista = document.getElementById('listaPedidos');
+      lista.innerHTML = '';
+      pedidos.forEach(p => {
+        lista.innerHTML += `<li>Pedido #${p.id} - Cliente: ${p.cliente} - Plato: ${p.plato} - Cantidad: ${p.cantidad} - Pago: ${p.pago}</li>`;
+      });
+    }
+
+    document.getElementById('deliveryForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const pedido = {
+        direccion: formData.get('direccion'),
+        telefono: formData.get('telefono'),
+        plato: formData.get('plato'),
+        cantidad: formData.get('cantidad'),
+        pago: formData.get('pago')
+      };
+      await fetch('/delivery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pedido)
+      });
+      cargarPedidos();
+      e.target.reset();
+    });
+
+    cargarPedidos();
+  </script>
+</body>
+</html>

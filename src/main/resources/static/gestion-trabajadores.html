@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Trabajadores</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        header { text-align: center; margin-bottom: 25px; }
+        .logo { width: 60px; margin-bottom: 10px; }
+        h1 { font-size: 1.6rem; margin-bottom: 8px; }
+        .btn-nuevo {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-nuevo:hover { background: #219150; }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            min-width: 600px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #2196f3;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover { background: #f5f5f5; }
+        
+        .btn-accion {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            color: white;
+            margin-right: 5px;
+        }
+        .btn-eliminar { background: #e74c3c; }
+        .btn-eliminar:hover { background: #c0392b; }
+
+        .volver-link {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .volver-link a {
+            text-decoration: none;
+            color: #ff7e5f;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.3rem; }
+            th, td { padding: 8px; font-size: 14px; }
+            .btn-accion { padding: 5px 8px; font-size: 12px; }
+        }
+        
+        @media (max-width: 480px) {
+            .btn-nuevo { width: 100%; text-align: center; }
+            table { font-size: 13px; }
+            body { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="imagenes/logo.png" alt="Logo" class="logo">
+            <h1>👷 Gestión de Trabajadores</h1>
+            <p>Administra el personal del restaurante</p>
+        </header>
+
+        <a href="registro-trabajador.html" class="btn-nuevo">➕ Nuevo Trabajador</a>
+
+        <div class="table-responsive">
+            <table id="tablaTrabajadores">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cargo</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="7" style="text-align:center; color:#666;">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="volver-link">
+            <a href="admin.html">← Volver al Panel Administrador</a>
+        </div>
+    </div>
+
+    <script>
+        async function cargarTrabajadores() {
+            try {
+                const response = await fetch('/api/trabajadores');
+                if (!response.ok) throw new Error('Error al cargar');
+                
+                const trabajadores = await response.json();
+                const tbody = document.querySelector('#tablaTrabajadores tbody');
+                
+                if (trabajadores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay trabajadores registrados</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = trabajadores.map(t => `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.nombre || 'N/A'}</td>
+                        <td>${t.apellido || 'N/A'}</td>
+                        <td>${t.cargo || 'N/A'}</td>
+                        <td>${t.dni || 'N/A'}</td>
+                        <td>${t.telefono || 'N/A'}</td>
+                        <td>
+                            <button class="btn-accion btn-eliminar" onclick="eliminarTrabajador(${t.id})">🗑️ Eliminar</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (e) {
+                document.querySelector('#tablaTrabajadores tbody').innerHTML = 
+                    `<tr><td colspan="7" style="text-align:center; color:#e74c3c;">Error: ${e.message}</td></tr>`;
+            }
+        }
+
+        async function eliminarTrabajador(id) {
+            if (!confirm('¿Eliminar este trabajador?')) return;
+            
+            try {
+                const response = await fetch(`/api/trabajadores/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('✅ Trabajador eliminado');
+                    cargarTrabajadores();
+                } else {
+                    alert('❌ Error al eliminar');
+                }
+            } catch (e) {
+                alert('❌ Error de conexión');
+            }
+        }
+
+        cargarTrabajadores();
+    </script>
+</body>
+</html>

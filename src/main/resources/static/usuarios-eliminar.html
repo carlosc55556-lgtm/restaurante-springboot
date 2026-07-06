@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Eliminar Usuario</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:linear-gradient(to right,#ff7e5f,#feb47b);}
+    .login-box { max-width:600px; margin:40px auto; padding:25px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+    header { text-align:center; margin-bottom:20px; }
+    .logo { width:80px; margin-bottom:10px; }
+    h1 { margin-bottom:15px; }
+    .confirmacion { margin:20px 0; font-size:16px; text-align:center; }
+    button { padding:12px; border:none; border-radius:6px; background:#e53935; color:#fff; cursor:pointer; }
+    button:hover { background:#c62828; }
+    .registro-link { margin-top:20px; text-align:center; }
+    .registro-link a { text-decoration:none; color:#ff7e5f; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>🗑️ Eliminar Usuario</h1>
+    </header>
+
+    <div class="confirmacion">
+      <p>¿Estás seguro que deseas eliminar al usuario <strong>Juan Pérez</strong> con ID <strong>1</strong>?</p>
+    </div>
+
+    <form action="/usuarios/eliminar" method="post">
+      <input type="hidden" name="id" value="1">
+      <button type="submit">Sí, Eliminar Usuario</button>
+    </form>
+
+    <p class="registro-link">
+      <a href="usuarios.html">⬅ Volver a Gestión de Usuarios</a>
+    </p>
+  </div>
+</body>
+</html>

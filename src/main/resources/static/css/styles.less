@@ -1,0 +1,162 @@
+@color1: #ff7e5f;
+@color2: #feb47b;
+@btnColor: #2196f3;
+@btnHover: #6a5acd;
+
+/* 🔹 Mixins */
+.gradient-bg() {
+  background: linear-gradient(to right, @color1, @color2);
+}
+
+.button-style() {
+  background-color: @btnColor;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: @btnHover;
+    transform: scale(1.05);
+  }
+}
+
+/* 🔹 Base */
+body {
+  .gradient-bg();
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-box {
+  background-color: #ffc0cb; // rosado claro
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  width: 350px;
+  text-align: center;
+}
+
+.logo {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+/* 🔹 Password toggle */
+.password-container {
+  position: relative;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  cursor: pointer;
+}
+
+/* 🔹 Botones */
+button {
+  .button-style();
+  width: 100%;
+  font-size: 16px;
+}
+
+.registro-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+.registro-link a {
+  color: @btnColor;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.registro-link a:hover {
+  text-decoration: underline;
+}
+
+/* 🔹 Paneles */
+.panel-buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-buttons button {
+  .button-style();
+  width: 100%;
+  font-size: 16px;
+}
+
+/* 🔹 Formularios */
+form {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* 🔹 Tablas (usuarios, reportes, etc.) */
+table {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+
+thead tr {
+  background-color: @btnColor;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* 🔹 Reportes y Dashboard */
+.report-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+canvas {
+  margin-top: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}

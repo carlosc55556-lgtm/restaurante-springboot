@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Trabajadores</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .btn-registrar {
+            background: #27ae60 !important;
+        }
+        .btn-registrar:hover {
+            background: #219150 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel-box">
+        <header>
+            <img src="imagenes/logo.png" alt="Logo" class="logo">
+            <h1>👨‍🍳 Gestión de Trabajadores</h1>
+            <h2>Administrar Personal</h2>
+            <p>Solo el administrador puede ver, modificar o eliminar trabajadores.</p>
+        </header>
+
+        <div class="panel-buttons">
+            <a href="registro-trabajador.html" class="btn btn-registrar">➕ Registrar Nuevo Trabajador</a>
+            <a href="/admin/trabajadores/ver" class="btn">👀 Ver Trabajadores</a>
+            <a href="/admin/trabajadores/modificar" class="btn">✏️ Modificar Trabajador</a>
+            <a href="/admin/trabajadores/eliminar" class="btn" style="background: #e74c3c;">🗑️ Eliminar Trabajador</a>
+        </div>
+
+        <div class="volver-link">
+            <a href="admin.html">← Volver al Panel Administrador</a>
+        </div>
+    </div>
+</body>
+</html>

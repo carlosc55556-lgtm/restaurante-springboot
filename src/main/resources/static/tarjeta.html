@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro Tarjeta</title>
+  <style>
+    body { font-family:Arial,sans-serif; background:#f0f0f0; }
+    .card-box { max-width:400px; margin:40px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+    label { display:block; margin-top:10px; font-weight:bold; }
+    input { width:100%; padding:10px; margin-top:5px; border:1px solid #ccc; border-radius:6px; }
+    button { margin-top:15px; padding:12px; background:#2196f3; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+    button:hover { background:#1976d2; }
+  </style>
+</head>
+<body>
+  <div class="card-box">
+    <h2>Registrar Tarjeta</h2>
+    <form>
+      <label>Número de tarjeta:</label>
+      <input type="text" name="numeroTarjeta" placeholder="XXXX-XXXX-XXXX-XXXX" required>
+
+      <label>Fecha de expiración:</label>
+      <input type="month" name="expiracion" required>
+
+      <label>CVV:</label>
+      <input type="text" name="cvv" placeholder="123" required>
+
+      <button type="submit">Guardar Tarjeta</button>
+    </form>
+  </div>
+</body>
+</html>

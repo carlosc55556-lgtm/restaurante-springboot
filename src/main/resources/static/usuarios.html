@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Usuarios</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:linear-gradient(to right,#ff7e5f,#feb47b);
+    }
+    .login-box {
+      width:98%; /* ocupa casi todo el ancho */
+      margin:20px auto;
+      padding:30px;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.2);
+      overflow-x:auto; /* scroll horizontal si la tabla es muy grande */
+    }
+    header { text-align:center; margin-bottom:20px; }
+    .logo { width:90px; margin-bottom:10px; }
+    h1 { margin-bottom:10px; color:#333; }
+    h2 { color:#444; margin-top:10px; }
+    p { color:#555; }
+
+    /* Filtro */
+    .filtro {
+      margin:20px 0;
+      text-align:right;
+    }
+    .filtro label {
+      font-weight:bold;
+      margin-right:10px;
+    }
+    select {
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid #ccc;
+    }
+
+    /* Tabla */
+    table {
+      width:100%;
+      border-collapse:collapse;
+      margin-top:15px;
+      font-size:14px;
+    }
+    th, td {
+      border:1px solid #ddd;
+      padding:12px;
+      text-align:center;
+      word-wrap:break-word;
+    }
+    th {
+      background:#2196f3;
+      color:white;
+      font-weight:bold;
+    }
+    tr:nth-child(even) {
+      background:#f9f9f9;
+    }
+    tr:hover {
+      background:#f1f1f1;
+    }
+
+    /* Botones de acciones */
+    .acciones button {
+      margin:3px;
+      padding:8px 14px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:bold;
+    }
+    .acciones button:first-child {
+      background:#2196f3;
+      color:#fff;
+    }
+    .acciones button:first-child:hover {
+      background:#1976d2;
+    }
+    .acciones button:last-child {
+      background:#e53935;
+      color:#fff;
+    }
+    .acciones button:last-child:hover {
+      background:#c62828;
+    }
+
+    /* Botón actualizar */
+    .panel-buttons {
+      margin-top:25px;
+      text-align:center;
+    }
+    .panel-buttons button {
+      padding:12px 20px;
+      border:none;
+      border-radius:6px;
+      background:#4caf50;
+      color:#fff;
+      font-size:15px;
+      cursor:pointer;
+    }
+    .panel-buttons button:hover {
+      background:#388e3c;
+    }
+
+    /* Volver */
+    .registro-link {
+      margin-top:20px;
+      text-align:center;
+    }
+    .registro-link a {
+      text-decoration:none;
+      color:#ff7e5f;
+      font-weight:bold;
+      font-size:15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>👥 Gestión de Usuarios</h1>
+    </header>
+
+    <h2>Lista de Usuarios Registrados</h2>
+    <p>Aquí puedes ver, modificar o eliminar usuarios del sistema.</p>
+
+    <!-- Filtro de tipo de cliente -->
+    <div class="filtro">
+      <label for="tipoCliente">Filtrar por tipo de cliente:</label>
+      <select id="tipoCliente" onchange="filtrarUsuarios()">
+        <option value="TODOS">Todos</option>
+        <option value="CONCURRENTE">Concurrente</option>
+        <option value="ESPORADICO">Esporádico</option>
+      </select>
+    </div>
+
+    <table id="tablaUsuarios">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>DNI</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Usuario</th>
+          <th>Correo</th>
+          <th>Celular</th>
+          <th>Dirección</th>
+          <th>Rol</th>
+          <th>Tipo Cliente</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-tipo="CONCURRENTE">
+          <td>1</td>
+          <td>76543210</td>
+          <td>Juan</td>
+          <td>Pérez</td>
+          <td>juanp</td>
+          <td>juan@example.com</td>
+          <td>987654321</td>
+          <td>Av. Lima 123</td>
+          <td>CLIENTE</td>
+          <td>CONCURRENTE</td>
+          <td class="acciones">
+            <button onclick="location.href='usuarios-modificar.html?id=1'">Modificar</button>
+            <button onclick="location.href='usuarios-eliminar.html?id=1'">Eliminar</button>
+          </td>
+        </tr>
+        <tr data-tipo="ESPORADICO">
+          <td>2</td>
+          <td>87654321</td>
+          <td>Ana</td>
+          <td>García</td>
+          <td>anag</td>
+          <td>ana@example.com</td>
+          <td>912345678</td>
+          <td>Jr. Cusco 456</td>
+          <td>CLIENTE</td>
+          <td>ESPORADICO</td>
+          <td class="acciones">
+            <button onclick="location.href='usuarios-modificar.html?id=2'">Modificar</button>
+            <button onclick="location.href='usuarios-eliminar.html?id=2'">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="panel-buttons">
+      <button onclick="location.href='usuarios.html'">🔄 Actualizar Lista</button>
+    </div>
+
+    <p class="registro-link">
+      <a href="admin.html">⬅ Volver al Panel Administrador</a>
+    </p>
+  </div>
+
+  <script>
+    function filtrarUsuarios() {
+      const filtro = document.getElementById("tipoCliente").value;
+      const filas = document.querySelectorAll("#tablaUsuarios tbody tr");
+      filas.forEach(fila => {
+        if (filtro === "TODOS" || fila.getAttribute("data-tipo") === filtro) {
+          fila.style.display = "";
+        } else {
+          fila.style.display = "none";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

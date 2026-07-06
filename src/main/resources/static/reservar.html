@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reservar Mesa</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>📅 Reservar Mesa</h1>
+    </header>
+
+    <h2>Haz tu reserva</h2>
+    <p>Indica la cantidad de personas y la fecha/hora de tu reserva.</p>
+
+    <form action="/reservas/crear" method="post">
+      <label>Cliente:</label>
+      <input type="text" name="cliente" placeholder="Nombre del cliente" required>
+
+      <label>Cantidad de personas:</label>
+      <input type="number" name="cantidadPersonas" min="1" required>
+
+      <label>Fecha y hora:</label>
+      <input type="datetime-local" name="fechaHora" required>
+
+      <button type="submit">Reservar</button>
+    </form>
+
+    <p class="registro-link">
+      <a href="cliente.html">⬅ Volver al Panel Cliente</a>
+    </p>
+  </div>
+</body>
+</html>

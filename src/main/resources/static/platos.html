@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Platos</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:linear-gradient(to right,#ff7e5f,#feb47b);}
+    .login-box { max-width:600px; margin:40px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+    form { margin-top:20px; }
+    label { display:block; margin:10px 0 5px; }
+    input, textarea { width:100%; padding:8px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
+    button { background:#2196f3; color:#fff; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; }
+    button:hover { background:#1976d2; }
+    .panel-buttons { margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+    .panel-buttons button { background:#4caf50; }
+    .panel-buttons button:hover { background:#388e3c; }
+    .registro-link { margin-top:20px; text-align:center; }
+    .registro-link a { text-decoration:none; color:#ff7e5f; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>🍲 Gestión de Platos</h1>
+    </header>
+
+    <h2>Administrar Platos</h2>
+    <p>Aquí puedes agregar, modificar o eliminar platos del menú.</p>
+
+    <form>
+      <label>Nombre del plato:</label>
+      <input type="text" name="nombre" placeholder="Ejemplo: Lomo Saltado" required>
+
+      <label>Descripción:</label>
+      <textarea name="descripcion" placeholder="Describe el plato" required></textarea>
+
+      <label>Precio:</label>
+      <input type="number" name="precio" step="0.01" placeholder="Ejemplo: 25.00" required>
+
+      <button type="submit">Agregar Plato</button>
+    </form>
+
+    <div class="panel-buttons">
+      <button onclick="location.href='platos-listar.html'">Ver Platos</button>
+      <button onclick="location.href='platos-modificar.html'">Modificar Plato</button>
+      <button onclick="location.href='platos-eliminar.html'">Eliminar Plato</button>
+    </div>
+
+    <p class="registro-link">
+      <a href="admin.html">⬅ Volver al Panel Administrador</a>
+    </p>
+  </div>
+</body>
+</html>

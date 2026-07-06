@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Pedido</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      padding: 20px;
+    }
+    .container { 
+      max-width: 700px; 
+      margin: 0 auto; 
+      padding: 25px; 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    header { text-align: center; margin-bottom: 20px; }
+    .logo { width: 60px; margin-bottom: 10px; }
+    h1 { margin-bottom: 10px; font-size: 1.5rem; }
+    p { color: #666; margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    input, select, textarea { 
+      width: 100%; 
+      padding: 12px; 
+      border: 1px solid #ddd; 
+      border-radius: 8px; 
+      font-size: 16px; 
+      font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 60px; }
+
+    .row { display: flex; gap: 10px; }
+    .row .form-group { flex: 1; }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-agregar { background: #27ae60; width: 100%; margin-top: 10px; }
+    .btn-agregar:hover { background: #219150; }
+    .btn-guardar { background: #2196f3; width: 100%; margin-top: 15px; padding: 14px; font-size: 16px; }
+    .btn-guardar:hover { background: #1976d2; }
+    .btn-eliminar { background: #e74c3c; padding: 6px 12px; font-size: 13px; }
+    .btn-mas { background: #27ae60; padding: 4px 10px; font-size: 12px; margin-right: 5px; }
+    .btn-menos { background: #f39c12; padding: 4px 10px; font-size: 12px; margin-right: 5px; }
+
+    .items-list {
+      margin: 20px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      background: #f8f9fa;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .item:last-child { border-bottom: none; }
+    .item-info { flex: 1; }
+    .item-precio { color: #27ae60; font-weight: bold; margin-right: 10px; }
+    .item-cantidad { color: #666; margin-right: 15px; }
+
+    .total-box {
+      text-align: right;
+      padding: 15px;
+      background: #e8f5e9;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .total-box h3 { color: #27ae60; font-size: 1.3rem; }
+
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    .alert-success { background: #d4edda; color: #155724; display: block; }
+    .alert-error { background: #f8d7da; color: #721c24; display: block; }
+
+    .volver { margin-top: 20px; text-align: center; }
+    .volver a { color: #ff7e5f; font-weight: bold; text-decoration: none; }
+
+    .empty-msg { text-align: center; color: #999; padding: 20px; }
+
+    .nota { font-size: 12px; color: #888; margin-top: 5px; font-style: italic; }
+
+    .debug-box {
+      margin-top: 15px;
+      padding: 10px;
+      background: #fff3e0;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: monospace;
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 15px; margin: 10px; }
+      h1 { font-size: 1.3rem; }
+      .row { flex-direction: column; gap: 0; }
+    }
+  </style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo" class="logo">
+      <h1>📝 Registrar Pedido</h1>
+      <p>Registra pedidos por cliente o mesa</p>
+    </header>
+
+    <div id="mensaje" class="alert"></div>
+    <div id="debug" class="debug-box" style="display:none;"></div>
+    
+    <!-- DATOS DEL CLIENTE/MESA -->
+    <div class="row">
+      <div class="form-group">
+        <label for="nombreCliente">Nombre del Cliente:</label>
+        <input type="text" id="nombreCliente" placeholder="Ej: Juan Pérez">
+      </div>
+      <div class="form-group">
+        <label for="numeroMesa">N° de Mesa:</label>
+        <input type="text" id="numeroMesa" placeholder="Ej: 5">
+      </div>
+    </div>
+
+    <!-- AGREGAR ITEMS -->
+    <h3 style="margin: 20px 0 10px; color: #333;">🍽️ Agregar Plato/Bebida</h3>
+
+    <div class="form-group">
+      <label for="platoId">Plato / Bebida:</label>
+      <select id="platoId">
+        <option value="">Cargando...</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label for="cantidadItem">Cantidad:</label>
+        <input type="number" id="cantidadItem" min="1" value="1">
+      </div>
+      <div class="form-group">
+        <label for="notasItem">Notas (opcional):</label>
+        <input type="text" id="notasItem" placeholder="Ej: Sin cebolla">
+      </div>
+    </div>
+
+    <button class="btn btn-agregar" onclick="agregarItem()">➕ Agregar al Pedido</button>
+
+    <!-- LISTA DE ITEMS -->
+    <div class="items-list">
+      <h3>📋 Items del Pedido</h3>
+      <div id="listaItems">
+        <p class="empty-msg">No hay items agregados</p>
+      </div>
+      <div class="total-box" id="totalBox" style="display:none;">
+        <h3>Total: S/ <span id="totalPedido">0.00</span></h3>
+      </div>
+    </div>
+
+    <!-- ESTADO Y GUARDAR -->
+    <div class="form-group">
+      <label for="estado">Estado:</label>
+      <select id="estado">
+        <option value="PENDIENTE">Pendiente</option>
+        <option value="EN_PREPARACION">En Preparación</option>
+        <option value="ENTREGADO">Entregado</option>
+      </select>
+    </div>
+
+    <button class="btn btn-guardar" onclick="guardarPedido()">💾 Guardar Pedido</button>
+
+    <div class="volver">
+      <a href="mozo.html">← Volver al Panel del Mozo</a>
+    </div>
+  </div>
+
+  <script>
+    let items = [];
+    let platosDisponibles = [];
+
+    function debug(msg) {
+      
+      console.log(msg);
+    }
+
+    async function cargarPlatos() {
+      try {
+        debug('Cargando platos...');
+        const response = await fetch('/api/platos');
+        if (!response.ok) throw new Error('Error ' + response.status);
+
+        platosDisponibles = await response.json();
+        debug('Platos cargados: ' + platosDisponibles.length);
+        const select = document.getElementById('platoId');
+
+        if (platosDisponibles.length === 0) {
+          select.innerHTML = '<option value="">No hay platos</option>';
+          return;
+        }
+
+        select.innerHTML = '<option value="">Selecciona...</option>' +
+          platosDisponibles.map(p => 
+            `<option value="${p.id}" data-precio="${p.precio}" data-nombre="${p.nombre}">
+              ${p.nombre} - S/ ${p.precio?.toFixed(2) || '0.00'}
+             </option>`
+          ).join('');
+
+      } catch (e) {
+        debug('ERROR cargando platos: ' + e.message);
+        document.getElementById('platoId').innerHTML = '<option value="">Error</option>';
+      }
+    }
+
+    function agregarItem() {
+      const select = document.getElementById('platoId');
+      const cantidad = parseInt(document.getElementById('cantidadItem').value) || 1;
+      const notas = document.getElementById('notasItem').value.trim();
+      const msg = document.getElementById('mensaje');
+
+      if (!select.value) {
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        msg.textContent = '❌ Selecciona un plato/bebida';
+        return;
+      }
+
+      const platoId = parseInt(select.value);
+      const option = select.options[select.selectedIndex];
+      const nombre = option.dataset.nombre;
+      const precio = parseFloat(option.dataset.precio) || 0;
+
+      const existente = items.find(i => i.platoId === platoId);
+      if (existente) {
+        existente.cantidad += cantidad;
+        if (notas) existente.notas = notas;
+      } else {
+        items.push({ platoId, nombre, precio, cantidad, notas });
+      }
+
+      actualizarLista();
+      msg.style.display = 'none';
+
+      select.value = '';
+      document.getElementById('cantidadItem').value = 1;
+      document.getElementById('notasItem').value = '';
+    }
+
+    function cambiarCantidad(index, delta) {
+      items[index].cantidad += delta;
+      if (items[index].cantidad <= 0) {
+        items.splice(index, 1);
+      }
+      actualizarLista();
+    }
+
+    function eliminarItem(index) {
+      items.splice(index, 1);
+      actualizarLista();
+    }
+
+    function actualizarLista() {
+      const container = document.getElementById('listaItems');
+      const totalBox = document.getElementById('totalBox');
+
+      if (items.length === 0) {
+        container.innerHTML = '<p class="empty-msg">No hay items agregados</p>';
+        totalBox.style.display = 'none';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = items.map((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        return `
+          <div class="item">
+            <div class="item-info">
+              <strong>${item.nombre}</strong>
+              <div class="nota">${item.notas ? '📝 ' + item.notas : ''}</div>
+            </div>
+            <div class="item-cantidad">
+              <button class="btn btn-menos" onclick="cambiarCantidad(${index}, -1)">-</button>
+              ${item.cantidad}
+              <button class="btn btn-mas" onclick="cambiarCantidad(${index}, 1)">+</button>
+            </div>
+            <div class="item-precio">S/ ${subtotal.toFixed(2)}</div>
+            <button class="btn btn-eliminar" onclick="eliminarItem(${index})">🗑️</button>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('totalPedido').textContent = total.toFixed(2);
+      totalBox.style.display = 'block';
+    }
+
+    async function guardarPedido() {
+      const nombreCliente = document.getElementById('nombreCliente').value.trim();
+      const numeroMesa = document.getElementById('numeroMesa').value.trim();
+      const estado = document.getElementById('estado').value;
+      const msg = document.getElementById('mensaje');
+      const debugBox = document.getElementById('debug');
+
+      debugBox.innerHTML = '';
+      debug('=== INICIANDO GUARDADO ===');
+      debug('Items: ' + items.length);
+      debug('Nombre: ' + nombreCliente);
+      debug('Mesa: ' + numeroMesa);
+
+      if (items.length === 0) {
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        msg.textContent = '❌ Agrega al menos un item';
+        debug('ERROR: Sin items');
+        return;
+      }
+
+      if (!nombreCliente && !numeroMesa) {
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        msg.textContent = '❌ Ingresa nombre del cliente o número de mesa';
+        debug('ERROR: Sin nombre ni mesa');
+        return;
+      }
+
+      msg.className = 'alert alert-success';
+      msg.style.display = 'block';
+      msg.textContent = '⏳ Guardando pedido...';
+
+      try {
+        const payload = {
+          estado: estado,
+          nombreCliente: nombreCliente || null,
+          numeroMesa: numeroMesa || null,
+          items: items.map(i => ({
+            platoId: i.platoId,
+            cantidad: i.cantidad,
+            notas: i.notas || null
+          }))
+        };
+
+        debug('Payload: ' + JSON.stringify(payload));
+
+        const response = await fetch('/api/pedidos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        debug('Response status: ' + response.status);
+
+        const responseText = await response.text();
+        debug('Response body: ' + responseText.substring(0, 500));
+
+        if (response.ok) {
+          const pedido = JSON.parse(responseText);
+          const total = items.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
+
+          msg.className = 'alert alert-success';
+          msg.innerHTML = `✅ <strong>Pedido #${pedido.id} guardado</strong><br>
+                           ${pedido.nombreCliente ? 'Cliente: ' + pedido.nombreCliente + '<br>' : ''}
+                           ${pedido.numeroMesa ? 'Mesa: ' + pedido.numeroMesa + '<br>' : ''}
+                           Items: ${items.length} | Total: S/ ${total.toFixed(2)}<br>
+                           <a href="gestionar-pedidos.html">📋 Ver Pedidos</a> | 
+                           <a href="registrar-venta.html">🧾 Generar Factura</a>`;
+
+          items = [];
+          actualizarLista();
+          document.getElementById('nombreCliente').value = '';
+          document.getElementById('numeroMesa').value = '';
+
+        } else {
+          msg.className = 'alert alert-error';
+          msg.textContent = '❌ Error del servidor: ' + responseText;
+          debug('ERROR servidor: ' + responseText);
+        }
+      } catch (e) {
+        msg.className = 'alert alert-error';
+        msg.textContent = '❌ Error: ' + e.message;
+        debug('ERROR catch: ' + e.message);
+        debug(e.stack);
+      }
+    }
+
+    cargarPlatos();
+  </script>
+</body>
+</html>

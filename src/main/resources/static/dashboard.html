@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard del Administrador</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:linear-gradient(to right,#ff7e5f,#feb47b);}
+    .dashboard-container { max-width:1000px; margin:0 auto; padding:15px; }
+    header { text-align:center; margin-bottom:15px; }
+    .logo { width:70px; margin-bottom:8px; }
+    h2, p { text-align:center; }
+    .report-section { margin:20px 0; text-align:center; }
+    .chart-wrapper { width:100%; max-width:600px; height:220px; margin:0 auto; }
+    .chart-wrapper canvas { width:100% !important; height:100% !important; }
+    .registro-link { text-align:center; margin-top:15px; }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>📊 Dashboard del Administrador</h1>
+    </header>
+
+    <h2>Resumen General</h2>
+    <p>Visualiza estadísticas de ventas, clientes, stock y satisfacción en un solo lugar.</p>
+
+    <!-- Gráficos -->
+    <section class="report-section">
+      <h3>Ventas por Semana</h3>
+      <div class="chart-wrapper">
+        <canvas id="graficoVentas"></canvas>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h3>Clientes Frecuentes</h3>
+      <div class="chart-wrapper">
+        <canvas id="graficoClientes"></canvas>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h3>Stock de Productos</h3>
+      <div class="chart-wrapper">
+        <canvas id="graficoStock"></canvas>
+      </div>
+    </section>
+
+    <section class="report-section">
+      <h3>Satisfacción Global</h3>
+      <div class="chart-wrapper">
+        <canvas id="graficoSatisfaccion"></canvas>
+      </div>
+    </section>
+
+    <p class="registro-link">
+      <a href="admin.html">⬅ Volver al Panel Administrador</a>
+    </p>
+  </div>
+
+  <!-- Librería Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Gráfico de Ventas
+    new Chart(document.getElementById('graficoVentas'), {
+      type: 'line',
+      data: {
+        labels: ['Semana 1','Semana 2','Semana 3','Semana 4'],
+        datasets: [{
+          label: 'Ventas (S/)',
+          data: [500, 700, 650, 800],
+          borderColor: '#2196f3',
+          fill: false
+        }]
+      },
+      options: { responsive:true, maintainAspectRatio:false }
+    });
+
+    // Gráfico de Clientes Frecuentes
+    new Chart(document.getElementById('graficoClientes'), {
+      type: 'bar',
+      data: {
+        labels: ['Lunes','Martes','Miércoles','Jueves','Viernes'],
+        datasets: [{
+          label: 'Clientes Frecuentes',
+          data: [20,25,30,18,40],
+          backgroundColor: '#6a5acd'
+        }]
+      },
+      options: { responsive:true, maintainAspectRatio:false }
+    });
+
+    // Gráfico de Stock
+    new Chart(document.getElementById('graficoStock'), {
+      type: 'pie',
+      data: {
+        labels: ['Ceviche','Lomo Saltado','Arroz Chaufa','Pollo a la Brasa'],
+        datasets: [{
+          label: 'Stock',
+          data: [50,30,20,40],
+          backgroundColor: ['#ff7e5f','#feb47b','#2196f3','#6a5acd']
+        }]
+      },
+      options: { responsive:true, maintainAspectRatio:false }
+    });
+
+    // Gráfico de Satisfacción Global (Clientes → Mozos y Mozos → Clientes)
+    new Chart(document.getElementById('graficoSatisfaccion'), {
+      type: 'bar',
+      data: {
+        labels: ['Clientes → Mozos','Mozos → Clientes'],
+        datasets: [{
+          label: 'Promedio de Estrellas',
+          data: [4.3, 3.9], // valores simulados, luego vendrán de BD
+          backgroundColor: ['#2196f3','#f39c12']
+        }]
+      },
+      options: { responsive:true, maintainAspectRatio:false }
+    });
+  </script>
+</body>
+</html>

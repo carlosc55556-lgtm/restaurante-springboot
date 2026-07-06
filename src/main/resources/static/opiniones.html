@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Opiniones</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+    th { background:#f2f2f2; }
+    .stars { color:#f39c12; font-size:18px; }
+    .comentario { text-align:left; }
+    .registro-link { margin-top:20px; text-align:center; }
+    .registro-link a { text-decoration:none; color:#2196f3; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>⭐ Opiniones</h1>
+    </header>
+
+    <h2>Feedback recibido</h2>
+    <p>Aquí el administrador puede revisar las calificaciones y comentarios de clientes y mozos.</p>
+
+    <table>
+      <tr>
+        <th>ID Cliente</th>
+        <th>Cliente → Mozo (Estrellas)</th>
+        <th>Comentario del Cliente</th>
+        <th>Mozo → Cliente (Estrellas)</th>
+        <th>Comentario del Mozo</th>
+      </tr>
+      <!-- Ejemplo de datos -->
+      <tr>
+        <td>C001</td>
+        <td class="stars">⭐⭐⭐⭐⭐</td>
+        <td class="comentario">Excelente atención, muy amable.</td>
+        <td class="stars">⭐⭐⭐</td>
+        <td class="comentario">Cliente respetuoso, pero demoró en decidir.</td>
+      </tr>
+      <tr>
+        <td>C002</td>
+        <td class="stars">⭐⭐⭐</td>
+        <td class="comentario">El pedido demoró un poco.</td>
+        <td class="stars">⭐⭐⭐⭐</td>
+        <td class="comentario">Cliente cordial y puntual.</td>
+      </tr>
+    </table>
+
+    <p class="registro-link">
+      <a href="admin.html">⬅ Volver al Panel Administrador</a>
+    </p>
+  </div>
+</body>
+</html>

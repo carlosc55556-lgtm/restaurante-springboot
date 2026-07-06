@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Pedidos - Restaurante</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { font-size: 1.5rem; margin-bottom: 8px; }
+        p { color: #666; margin-bottom: 20px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #ff7e5f;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover { background: #f8f9fa; }
+        .total { font-weight: bold; color: #27ae60; }
+        .estado-entregado { color: #27ae60; font-weight: bold; }
+        .estado-pendiente { color: #f39c12; font-weight: bold; }
+        .sin-platos { color: #e74c3c; font-style: italic; }
+
+        .detalle-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .detalle-btn:hover { background: #1976d2; }
+
+        .detalle-row {
+            display: none;
+            background: #f8f9fa;
+        }
+        .detalle-row.visible { display: table-row; }
+        .detalle-content { padding: 15px; }
+
+        .volver-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .volver-link a {
+            text-decoration: none;
+            color: #ff7e5f;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .refresh-btn:hover { background: #219150; }
+
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            th, td { padding: 8px; font-size: 14px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Lista de Pedidos</h1>
+            <p>Todos los pedidos registrados en el sistema</p>
+        </header>
+
+        <button class="refresh-btn" onclick="cargarPedidos()">🔄 Actualizar</button>
+
+        <div id="loading">Cargando pedidos...</div>
+        <div id="tabla-container" style="display:none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Mesa</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="pedidos-body">
+                </tbody>
+            </table>
+        </div>
+        <div id="error-msg" style="color: #e74c3c; text-align: center; margin-top: 20px;"></div>
+
+        <div class="volver-link">
+            <a href="mozo.html">← Volver al Panel del Mozo</a>
+        </div>
+    </div>
+
+    <script>
+        async function cargarPedidos() {
+            const loading = document.getElementById('loading');
+            const tabla = document.getElementById('tabla-container');
+            const tbody = document.getElementById('pedidos-body');
+            const errorMsg = document.getElementById('error-msg');
+
+            loading.style.display = 'block';
+            tabla.style.display = 'none';
+            errorMsg.textContent = '';
+            tbody.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/pedidos');
+                if (!response.ok) throw new Error('Error ' + response.status);
+
+                const pedidos = await response.json();
+                loading.style.display = 'none';
+
+                if (pedidos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay pedidos</td></tr>';
+                    tabla.style.display = 'block';
+                    return;
+                }
+
+                pedidos.forEach(p => {
+                    const estadoClass = p.estado === 'ENTREGADO' ? 'estado-entregado' : 'estado-pendiente';
+                    const totalClass = p.total > 0 ? 'total' : 'sin-platos';
+                    const totalText = p.total > 0 ? 'S/ ' + p.total.toFixed(2) : 'S/ 0.00 (sin platos)';
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>#${p.id}</td>
+                        <td>${p.nombreCliente || 'Sin nombre'}</td>
+                        <td>${p.numeroMesa || '-'}</td>
+                        <td class="${estadoClass}">${p.estado}</td>
+                        <td>${p.fecha ? new Date(p.fecha).toLocaleString('es-PE') : '-'}</td>
+                        <td class="${totalClass}">${totalText}</td>
+                        <td><button class="detalle-btn" onclick="verDetalle(${p.id}, this)">👁 Ver Detalle</button></td>
+                    `;
+                    tbody.appendChild(row);
+
+                    // Fila oculta para detalles
+                    const detalleRow = document.createElement('tr');
+                    detalleRow.className = 'detalle-row';
+                    detalleRow.id = 'detalle-' + p.id;
+                    detalleRow.innerHTML = `<td colspan="7"><div class="detalle-content" id="content-${p.id}">Cargando...</div></td>`;
+                    tbody.appendChild(detalleRow);
+                });
+
+                tabla.style.display = 'block';
+
+            } catch (e) {
+                loading.style.display = 'none';
+                errorMsg.textContent = '❌ Error al cargar: ' + e.message;
+            }
+        }
+
+        async function verDetalle(pedidoId, btn) {
+            const detalleRow = document.getElementById('detalle-' + pedidoId);
+            const content = document.getElementById('content-' + pedidoId);
+
+            if (detalleRow.classList.contains('visible')) {
+                detalleRow.classList.remove('visible');
+                btn.textContent = '👁 Ver Detalle';
+                return;
+            }
+
+            // Ocultar otros detalles
+            document.querySelectorAll('.detalle-row.visible').forEach(r => r.classList.remove('visible'));
+            document.querySelectorAll('.detalle-btn').forEach(b => b.textContent = '👁 Ver Detalle');
+
+            detalleRow.classList.add('visible');
+            btn.textContent = '🔼 Ocultar';
+
+            try {
+                const response = await fetch('/api/pedidos/' + pedidoId);
+                if (!response.ok) throw new Error('Error al obtener detalle');
+
+                const pedido = await response.json();
+
+                let html = '<strong>Detalle del Pedido #' + pedidoId + '</strong><br><br>';
+
+                if (pedido.detalles && pedido.detalles.length > 0) {
+                    html += '<table style="width:100%; font-size:14px;">';
+                    html += '<tr><th>Plato</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th><th>Notas</th></tr>';
+                    let total = 0;
+                    pedido.detalles.forEach(d => {
+                        const precio = d.precioUnitario || 0;
+                        const cant = d.cantidad || 1;
+                        const sub = precio * cant;
+                        total += sub;
+                        html += `<tr>
+                            <td>${d.plato ? d.plato.nombre : 'Plato #' + d.platoId}</td>
+                            <td>${cant}</td>
+                            <td>S/ ${precio.toFixed(2)}</td>
+                            <td>S/ ${sub.toFixed(2)}</td>
+                            <td>${d.notas || '-'}</td>
+                        </tr>`;
+                    });
+                    html += `<tr style="font-weight:bold; background:#e8f5e9;"><td colspan="3">TOTAL</td><td colspan="2">S/ ${total.toFixed(2)}</td></tr>`;
+                    html += '</table>';
+                } else {
+                    html += '<span class="sin-platos">⚠️ Este pedido no tiene platos/bebidas registrados.</span>';
+                }
+
+                content.innerHTML = html;
+
+            } catch (e) {
+                content.innerHTML = '<span style="color:#e74c3c;">Error cargando detalle: ' + e.message + '</span>';
+            }
+        }
+
+        cargarPedidos();
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Calificar Cliente</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(to right,#ff7e5f,#feb47b);
+    }
+    .container {
+      max-width:600px;
+      margin:40px auto;
+      padding:20px;
+      text-align:center;
+      background:#fff;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    }
+    h1 { margin-bottom:20px; }
+    form { margin-top:20px; }
+    label { display:block; margin:10px 0 5px; text-align:left; }
+
+    /* Estrellas centradas */
+    .rating {
+      display:flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      gap:5px;
+      margin-bottom:15px;
+    }
+    .rating input { display:none; }
+    .rating label {
+      font-size:30px;
+      color:#ccc;
+      cursor:pointer;
+      transition:color 0.2s;
+    }
+    .rating input:checked ~ label {
+      color:#ff9800;
+    }
+    .rating label:hover,
+    .rating label:hover ~ label {
+      color:#ff9800;
+    }
+
+    textarea {
+      width:100%;
+      padding:8px;
+      margin-top:5px;
+      border-radius:5px;
+      border:1px solid #ccc;
+    }
+    button {
+      background:#4caf50;
+      color:#fff;
+      padding:10px 20px;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+    }
+    button:hover { background:#388e3c; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⭐ Calificar Cliente</h1>
+    <form id="calificarForm">
+      <!-- Nombre del cliente mostrado por defecto (ejemplo) -->
+      <label>Nombre del Cliente:</label>
+      <input type="text" id="cliente" name="cliente" value="Juan Pérez" readonly>
+
+      <label>Calificación:</label>
+      <div class="rating">
+        <input type="radio" id="star5" name="calificacion" value="5" required><label for="star5">★</label>
+        <input type="radio" id="star4" name="calificacion" value="4"><label for="star4">★</label>
+        <input type="radio" id="star3" name="calificacion" value="3"><label for="star3">★</label>
+        <input type="radio" id="star2" name="calificacion" value="2"><label for="star2">★</label>
+        <input type="radio" id="star1" name="calificacion" value="1"><label for="star1">★</label>
+      </div>
+
+      <label for="comentarios">Comentarios:</label>
+      <textarea id="comentarios" name="comentarios" rows="4" placeholder="Opcional: escribe un comentario..."></textarea>
+
+      <button type="submit">Guardar Calificación</button>
+    </form>
+  </div>
+
+  <script>
+    // Capturamos el envío del formulario
+    document.getElementById("calificarForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // evitamos error 405
+
+      // Simulación de envío al administrador y dashboard
+      // En un backend real aquí se guardaría en la BD y se mostraría en opiniones.html y dashboard.html
+      alert("✅ Calificación enviada correctamente. El administrador podrá verla en el panel de opiniones y en el dashboard.");
+
+      // Redirigir automáticamente al panel del mozo para atender al siguiente cliente
+      window.location.href = "mozo.html";
+    });
+  </script>
+</body>
+</html>

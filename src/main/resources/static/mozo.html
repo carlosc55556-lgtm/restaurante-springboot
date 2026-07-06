@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel del Mozo</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .login-box {
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 25px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+    .logo { width: 80px; margin-bottom: 10px; }
+    h1 { margin-bottom: 10px; font-size: 1.6rem; }
+    h2 { margin-top: 10px; margin-bottom: 10px; color: #444; font-size: 1.2rem; }
+    p { color: #666; margin-bottom: 20px; }
+    
+    .panel-buttons {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .panel-buttons a, .panel-buttons button {
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #2196f3;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .panel-buttons a:hover, .panel-buttons button:hover {
+      background: #1976d2;
+      transform: scale(1.02);
+    }
+    .btn-factura { background: #27ae60 !important; }
+    .btn-factura:hover { background: #219150 !important; }
+    
+    .registro-link { margin-top: 25px; }
+    .registro-link a {
+      text-decoration: none;
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    @media (max-width: 480px) {
+      .login-box { padding: 15px; margin: 10px; }
+      h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>🍽️ Panel del Mozo</h1>
+    </header>
+
+    <h2>Gestión de Mesas y Ventas</h2>
+    <p>Aquí gestionas reservas, atiendes clientes y generas comprobantes de venta.</p>
+
+    <div class="panel-buttons">
+      <a href="reservas.html?rol=MOZO">📅 Ver Reservas</a>
+      <a href="pedidos.html">📝 Registrar Pedido</a>
+      <a href="gestionar-pedidos.html">📋 Gestionar Pedidos</a>
+      <a href="calificar.html">⭐ Calificar Cliente</a>
+      <a href="registrar-venta.html" class="btn-factura">🧾 Generar Factura / Boleta</a>
+      <a href="ventas.html">📊 Ver Ventas y Comprobantes</a>
+    </div>
+
+    <div class="registro-link">
+      <a href="/logout">🚪 Cerrar sesión</a>
+    </div>
+  </div>
+</body>
+</html>

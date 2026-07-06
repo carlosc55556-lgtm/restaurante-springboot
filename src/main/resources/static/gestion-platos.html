@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Platos</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="form-box">
+        <header>
+            <img src="/imagenes/logo.png" alt="Logo" class="logo">
+            <h1>🍽️ Gestión de Platos</h1>
+            <h2>Administrar Platos</h2>
+            <p>Aquí puedes agregar, modificar o eliminar platos del menú.</p>
+        </header>
+
+        <!-- Mensaje de éxito/error -->
+        <div id="mensaje" class="alert"></div>
+
+        <!-- Formulario para agregar plato -->
+        <form id="formPlato" action="/admin/platos/agregar" method="post">
+            <label for="nombre">Nombre del plato:</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Arroz con pollo" required>
+
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" placeholder="Ingredientes, preparación..."></textarea>
+
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" placeholder="35.00" step="0.01" min="0" required>
+
+            <label for="categoria">Categoría:</label>
+            <select id="categoria" name="categoria">
+                <option value="Entrada">Entrada</option>
+                <option value="Plato Principal">Plato Principal</option>
+                <option value="Postre">Postre</option>
+                <option value="Bebida">Bebida</option>
+            </select>
+
+            <label for="stock">Stock inicial:</label>
+            <input type="number" id="stock" name="stock" placeholder="0" min="0" value="0">
+
+            <button type="submit">Agregar Plato</button>
+        </form>
+
+        <div class="volver-link">
+            <a href="/admin.html">← Volver al Panel Administrador</a>
+        </div>
+    </div>
+
+    <!-- Lista de platos -->
+    <div class="lista-box" style="margin-top: 20px;">
+        <h2>🍽️ Lista de Platos</h2>
+        <div class="table-wrapper">
+            <table id="tablaPlatos">
+                <thead>
+                    <tr>
+                        <th>Plato</th>
+                        <th>Descripción</th>
+                        <th>Precio</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyPlatos">
+                    <!-- Se llena con JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar mensaje desde URL params
+        const params = new URLSearchParams(window.location.search);
+        const mensajeDiv = document.getElementById('mensaje');
+        
+        if (params.has('exito')) {
+            mensajeDiv.textContent = '¡Plato agregado exitosamente!';
+            mensajeDiv.className = 'alert alert-success';
+        }
+        if (params.has('error')) {
+            mensajeDiv.textContent = 'Error al agregar el plato.';
+            mensajeDiv.className = 'alert alert-error';
+        }
+
+        // Cargar platos vía AJAX
+        async function cargarPlatos() {
+            try {
+                const response = await fetch('/api/platos');
+                const platos = await response.json();
+                const tbody = document.getElementById('tbodyPlatos');
+                
+                tbody.innerHTML = platos.map(p => `
+                    <tr>
+                        <td>${p.nombre}</td>
+                        <td>${p.descripcion || '-'}</td>
+                        <td>S/ ${p.precio.toFixed(2)}</td>
+                        <td>${p.categoria || '-'}</td>
+                        <td>${p.stock}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                console.error('Error cargando platos:', e);
+            }
+        }
+
+        // Cargar al iniciar
+        cargarPlatos();
+    </script>
+</body>
+</html>

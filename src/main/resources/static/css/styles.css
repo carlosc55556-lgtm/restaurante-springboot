@@ -1,0 +1,274 @@
+/* ============================================
+   RESTAURANTE WEB - CSS RESPONSIVE
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  font-family: Arial, sans-serif;
+  min-height: 100vh;          /* ← CAMBIO: min-height en vez de height */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;    /* ← CAMBIO: flex-start en vez de center */
+  padding: 20px;              /* ← NUEVO: padding para respirar */
+  margin: 0;
+}
+
+/* Contenedor universal - se adapta a todo */
+.login-box, .panel-box, .dashboard-box, .form-box, .lista-box {
+  background-color: #ffc0cb;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 100%;                /* ← CAMBIO: 100% en vez de 350px fijo */
+  max-width: 500px;           /* ← NUEVO: límite máximo */
+  text-align: center;
+}
+
+/* Para paneles más anchos */
+.panel-box, .dashboard-box {
+  max-width: 900px;
+}
+
+/* Para listas y tablas */
+.lista-box {
+  max-width: 1000px;
+}
+
+.logo {
+  width: 80px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Password toggle */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Botones */
+button, .btn {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  font-size: 16px;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+button:hover, .btn:hover {
+  background-color: #6a5acd;
+  transform: scale(1.02);
+}
+
+/* Grid de botones del panel */
+.panel-buttons {
+  margin-top: 20px;
+  display: grid;                          /* ← CAMBIO: grid en vez de flex */
+  grid-template-columns: 1fr;             /* ← NUEVO: una columna por defecto */
+  gap: 12px;
+}
+
+/* En pantallas medianas, 2 columnas */
+@media (min-width: 600px) {
+  .panel-buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* En pantallas grandes, 3 columnas */
+@media (min-width: 900px) {
+  .panel-buttons {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Formularios */
+form {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+label {
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Mensajes de alerta */
+.alert {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  display: none;
+}
+
+.alert-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  display: block;
+}
+
+.alert-error {
+  background: #fdeaea;
+  color: #c0392b;
+  display: block;
+}
+
+/* Tablas responsivas */
+.table-wrapper {
+  overflow-x: auto;         /* ← NUEVO: scroll horizontal en móvil */
+  -webkit-overflow-scrolling: touch;
+  margin-top: 15px;
+}
+
+table {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  min-width: 600px;         /* ← NUEVO: para forzar scroll en móvil */
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+thead tr {
+  background-color: #2196f3;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Links */
+.registro-link, .volver-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+.registro-link a, .volver-link a {
+  color: #2196f3;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.registro-link a:hover, .volver-link a:hover {
+  text-decoration: underline;
+}
+
+/* Reportes y Dashboard */
+.report-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr;     /* ← NUEVO: una columna en móvil */
+  gap: 20px;
+  margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr 1fr;   /* ← 2 columnas en tablet */
+  }
+}
+
+canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+/* ============================================
+   MEDIA QUERIES - Móviles
+   ============================================ */
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  .login-box, .panel-box, .dashboard-box, .form-box, .lista-box {
+    padding: 15px 20px;
+    border-radius: 10px;
+  }
+  
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; }
+  
+  button, .btn {
+    padding: 10px;
+    font-size: 15px;
+  }
+  
+  input, select, textarea {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  th, td {
+    padding: 6px;
+    font-size: 13px;
+  }
+}

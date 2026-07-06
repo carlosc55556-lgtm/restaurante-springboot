@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Reservas</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:linear-gradient(to right,#ff7e5f,#feb47b);
+    }
+    .login-box {
+      width:98%;
+      margin:20px auto;
+      padding:30px;
+      background:#fff;
+      border-radius:12px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.2);
+      overflow-x:auto;
+    }
+    header { text-align:center; margin-bottom:20px; }
+    .logo { width:90px; margin-bottom:10px; }
+    h1 { margin-bottom:10px; color:#333; }
+    h2 { color:#444; margin-top:10px; }
+    p { color:#555; }
+
+    table { width:100%; border-collapse:collapse; margin-top:20px; font-size:14px; }
+    th, td { border:1px solid #ccc; padding:12px; text-align:center; word-wrap:break-word; }
+    th { background:#2196f3; color:#fff; font-weight:bold; }
+    tr:nth-child(even) { background:#f9f9f9; }
+    tr:hover { background:#f1f1f1; }
+
+    .acciones button {
+      margin:3px;
+      padding:8px 14px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:bold;
+    }
+    .modificar { background:#2196f3; color:#fff; }
+    .modificar:hover { background:#1976d2; }
+    .cancelar { background:#e53935; color:#fff; }
+    .cancelar:hover { background:#c62828; }
+
+    .registro-link { margin-top:20px; text-align:center; }
+    .registro-link a { text-decoration:none; color:#ff7e5f; font-weight:bold; font-size:15px; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>📋 Gestión de Reservas</h1>
+    </header>
+
+    <h2>Reservas registradas</h2>
+    <p id="mensaje"></p>
+
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Personas</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Platos Reservados</th>
+        <th id="accionesHeader">Acciones</th>
+      </tr>
+      <tr>
+        <td>R001</td>
+        <td>Juan Pérez</td>
+        <td>4</td>
+        <td>2026-06-15</td>
+        <td>20:00</td>
+        <td>Pollo a la Brasa, Ceviche</td>
+        <td class="acciones" id="accionesR001"></td>
+      </tr>
+      <tr>
+        <td>R002</td>
+        <td>María López</td>
+        <td>2</td>
+        <td>2026-06-16</td>
+        <td>19:30</td>
+        <td>Lomo Saltado</td>
+        <td class="acciones" id="accionesR002"></td>
+      </tr>
+    </table>
+
+    <p class="registro-link">
+      <a id="volverLink" href="#">⬅ Volver</a>
+    </p>
+  </div>
+
+  <script>
+    // Detectar rol desde parámetro en la URL (?rol=ADMIN o ?rol=MOZO)
+    const params = new URLSearchParams(window.location.search);
+    const rolUsuario = params.get("rol") || "MOZO"; // por defecto MOZO
+
+    const mensaje = document.getElementById("mensaje");
+    const volverLink = document.getElementById("volverLink");
+
+    if (rolUsuario === "ADMIN") {
+      mensaje.textContent = "Aquí el administrador puede ver, modificar o cancelar reservas.";
+      volverLink.href = "gestionar-reservas.html";
+
+      // Mostrar botones de acciones
+      document.getElementById("accionesR001").innerHTML = `
+        <button class="modificar" onclick="location.href='modificar-reserva.html?id=R001'">Modificar</button>
+        <button class="cancelar" onclick="location.href='cancelar-reserva.html?id=R001'">Cancelar</button>
+      `;
+      document.getElementById("accionesR002").innerHTML = `
+        <button class="modificar" onclick="location.href='modificar-reserva.html?id=R002'">Modificar</button>
+        <button class="cancelar" onclick="location.href='cancelar-reserva.html?id=R002'">Cancelar</button>
+      `;
+    } else {
+      mensaje.textContent = "Aquí el mozo puede ver las reservas para corroborar datos.";
+      volverLink.href = "mozo.html";
+
+      // Ocultar columna de acciones
+      document.getElementById("accionesHeader").style.display = "none";
+      document.querySelectorAll(".acciones").forEach(td => td.style.display = "none");
+    }
+  </script>
+</body>
+</html>

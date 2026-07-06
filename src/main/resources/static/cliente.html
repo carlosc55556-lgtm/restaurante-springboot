@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel del Cliente</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .panel-buttons { margin-top:20px; display:flex; flex-direction:column; gap:10px; }
+    .panel-buttons button { padding:12px; font-size:16px; border:none; border-radius:6px; background:#2196f3; color:#fff; cursor:pointer; }
+    .panel-buttons button:hover { background:#1976d2; }
+    form { margin-top:20px; }
+    label { display:block; margin-top:10px; font-weight:bold; }
+
+    /* Estilos para las estrellas centradas */
+    .rating {
+      display:flex;
+      flex-direction: row-reverse;
+      justify-content: center; /* centrado horizontal */
+      gap:5px;
+    }
+    .rating input { display:none; }
+    .rating label {
+      font-size:28px;
+      color:#ccc;
+      cursor:pointer;
+      transition: color 0.2s;
+    }
+    .rating input:checked ~ label {
+      color:#f39c12;
+    }
+    .rating label:hover,
+    .rating label:hover ~ label {
+      color:#f39c12;
+    }
+
+    textarea { width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
+    button[type="submit"] { margin-top:15px; background:#27ae60; color:#fff; padding:10px; border:none; border-radius:6px; cursor:pointer; }
+    button[type="submit"]:hover { background:#1e8449; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>🍽️ Bienvenido Cliente</h1>
+    </header>
+
+    <h2>Opciones disponibles</h2>
+    <p>Aquí puedes ver el menú, hacer reservas, pedidos online y dejar tu opinión.</p>
+
+    <div class="panel-buttons">
+      <button onclick="location.href='menu.html'">Ver Menú</button>
+      <button onclick="location.href='reservar.html'">Reservar Mesa</button>
+      <button onclick="location.href='delivery.html'">Pedido Delivery</button>
+    </div>
+
+    <!-- Sección de calificación -->
+    <h2>Ayúdanos a mejorar la excelencia</h2>
+    <form id="opinionForm">
+      <label>Califica la atención del mozo:</label>
+      <div class="rating">
+        <input type="radio" id="mozo5" name="calificacionMozo" value="5"><label for="mozo5">★</label>
+        <input type="radio" id="mozo4" name="calificacionMozo" value="4"><label for="mozo4">★</label>
+        <input type="radio" id="mozo3" name="calificacionMozo" value="3"><label for="mozo3">★</label>
+        <input type="radio" id="mozo2" name="calificacionMozo" value="2"><label for="mozo2">★</label>
+        <input type="radio" id="mozo1" name="calificacionMozo" value="1"><label for="mozo1">★</label>
+      </div>
+
+      <label>Califica el servicio del restaurante:</label>
+      <div class="rating">
+        <input type="radio" id="servicio5" name="calificacionServicio" value="5"><label for="servicio5">★</label>
+        <input type="radio" id="servicio4" name="calificacionServicio" value="4"><label for="servicio4">★</label>
+        <input type="radio" id="servicio3" name="calificacionServicio" value="3"><label for="servicio3">★</label>
+        <input type="radio" id="servicio2" name="calificacionServicio" value="2"><label for="servicio2">★</label>
+        <input type="radio" id="servicio1" name="calificacionServicio" value="1"><label for="servicio1">★</label>
+      </div>
+
+      <label>¿Recomendarías el restaurante?</label>
+      <div class="rating">
+        <input type="radio" id="recom5" name="recomendacion" value="5"><label for="recom5">★</label>
+        <input type="radio" id="recom4" name="recomendacion" value="4"><label for="recom4">★</label>
+        <input type="radio" id="recom3" name="recomendacion" value="3"><label for="recom3">★</label>
+        <input type="radio" id="recom2" name="recomendacion" value="2"><label for="recom2">★</label>
+        <input type="radio" id="recom1" name="recomendacion" value="1"><label for="recom1">★</label>
+      </div>
+
+      <label>Comentarios adicionales:</label>
+      <textarea name="comentarios" placeholder="Escribe tu opinión aquí..."></textarea>
+
+      <button type="submit">Enviar Opinión</button>
+    </form>
+
+    <p class="registro-link">
+      <a href="login.html">Cerrar sesión</a>
+    </p>
+  </div>
+
+  <script>
+    // Capturamos el envío del formulario
+    document.getElementById("opinionForm").addEventListener("submit", function(e) {
+      e.preventDefault(); // evitamos error 405
+
+      // Aquí simulas guardar la opinión en backend o enviarla al administrador
+      // Por ahora mostramos un mensaje de confirmación
+      alert("✅ Opinión enviada correctamente. Gracias por tu feedback.");
+
+      // Redirigir automáticamente al login
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

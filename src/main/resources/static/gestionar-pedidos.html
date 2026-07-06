@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestionar Pedidos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container { 
+      max-width: 1100px; 
+      margin: 0 auto; 
+      padding: 25px; 
+      background: #fff; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    header { text-align: center; margin-bottom: 20px; }
+    h1 { margin-bottom: 10px; font-size: 1.5rem; }
+    p { color: #666; margin-bottom: 20px; }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-refresh { background: #2196f3; }
+    .btn-refresh:hover { background: #1976d2; }
+    .btn-nuevo { background: #27ae60; }
+    .btn-nuevo:hover { background: #219150; }
+    .btn-factura { background: #f39c12; }
+    .btn-factura:hover { background: #e67e22; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #ff7e5f;
+      color: white;
+    }
+    tr:hover { background: #f8f9fa; }
+    .estado-pendiente { color: #f39c12; font-weight: bold; }
+    .estado-en_preparacion { color: #2196f3; font-weight: bold; }
+    .estado-entregado { color: #27ae60; font-weight: bold; }
+    .total-ok { color: #27ae60; font-weight: bold; }
+    .total-cero { color: #e74c3c; font-style: italic; }
+
+    .estado-select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 13px;
+    }
+
+    .acciones {
+      display: flex;
+      gap: 5px;
+    }
+    .acciones button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      color: white;
+    }
+    .btn-ver { background: #2196f3; }
+    .btn-guardar { background: #27ae60; display: none; }
+    .btn-factura-small { background: #f39c12; }
+    .btn-eliminar { background: #e74c3c; }
+
+    .detalle-panel {
+      display: none;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .detalle-panel.visible { display: block; }
+    .detalle-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #ccc;
+    }
+    .detalle-item:last-child { border-bottom: none; }
+
+    .volver { margin-top: 20px; text-align: center; }
+    .volver a { color: #ff7e5f; font-weight: bold; text-decoration: none; }
+
+    .alert {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: none;
+    }
+    .alert-success { background: #d4edda; color: #155724; display: block; }
+    .alert-error { background: #f8d7da; color: #721c24; display: block; }
+
+    .empty { text-align: center; color: #999; padding: 30px; }
+
+    @media (max-width: 768px) {
+      .container { padding: 15px; }
+      table { font-size: 12px; }
+      th, td { padding: 6px; }
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📋 Gestionar Pedidos</h1>
+      <p>Ver todos los pedidos, cambiar estado y generar comprobantes</p>
+    </header>
+
+    <div id="mensaje" class="alert"></div>
+
+    <div class="toolbar">
+      <button class="btn btn-refresh" onclick="cargarPedidos()">🔄 Actualizar</button>
+      <button class="btn btn-nuevo" onclick="location.href='pedidos.html'">➕ Nuevo Pedido</button>
+      <button class="btn btn-factura" onclick="location.href='registrar-venta.html'">🧾 Generar Factura</button>
+    </div>
+
+    <div id="loading">Cargando pedidos...</div>
+    <div id="tabla-container" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Mesa</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="pedidos-body"></tbody>
+      </table>
+    </div>
+    <div id="empty-msg" class="empty" style="display:none;">No hay pedidos registrados</div>
+
+    <div class="volver">
+      <a href="mozo.html">← Volver al Panel del Mozo</a>
+    </div>
+  </div>
+
+  <script>
+    let pedidosCache = [];
+
+    async function cargarPedidos() {
+      const loading = document.getElementById('loading');
+      const tabla = document.getElementById('tabla-container');
+      const tbody = document.getElementById('pedidos-body');
+      const empty = document.getElementById('empty-msg');
+      const msg = document.getElementById('mensaje');
+
+      loading.style.display = 'block';
+      tabla.style.display = 'none';
+      empty.style.display = 'none';
+      msg.style.display = 'none';
+      tbody.innerHTML = '';
+
+      try {
+        const response = await fetch('/api/pedidos');
+        if (!response.ok) throw new Error('Error ' + response.status);
+
+        pedidosCache = await response.json();
+        loading.style.display = 'none';
+
+        if (pedidosCache.length === 0) {
+          empty.style.display = 'block';
+          return;
+        }
+
+        pedidosCache.forEach(p => {
+          const estadoClass = 'estado-' + (p.estado || 'pendiente').toLowerCase().replace(' ', '_');
+          const totalClass = p.total > 0 ? 'total-ok' : 'total-cero';
+          const totalText = p.total > 0 ? 'S/ ' + p.total.toFixed(2) : 'S/ 0.00';
+
+          const row = document.createElement('tr');
+          row.id = 'row-' + p.id;
+          row.innerHTML = `
+            <td>#${p.id}</td>
+            <td>${p.nombreCliente || 'Sin nombre'}</td>
+            <td>${p.numeroMesa || '-'}</td>
+            <td>
+              <select class="estado-select" id="estado-${p.id}" onchange="marcarCambio(${p.id})">
+                <option value="PENDIENTE" ${p.estado === 'PENDIENTE' ? 'selected' : ''}>Pendiente</option>
+                <option value="EN_PREPARACION" ${p.estado === 'EN_PREPARACION' ? 'selected' : ''}>En Preparación</option>
+                <option value="ENTREGADO" ${p.estado === 'ENTREGADO' ? 'selected' : ''}>Entregado</option>
+              </select>
+            </td>
+            <td>${p.fecha ? new Date(p.fecha).toLocaleString('es-PE') : '-'}</td>
+            <td class="${totalClass}">${totalText}</td>
+            <td class="acciones">
+              <button class="btn-ver" onclick="verDetalle(${p.id})">👁</button>
+              <button class="btn-guardar" id="btn-save-${p.id}" onclick="guardarEstado(${p.id})">💾</button>
+              <button class="btn-eliminar" onclick="eliminarPedido(${p.id})">🗑️</button>
+              <button class="btn-factura-small" onclick="irAFactura(${p.id})">🧾</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+
+          const detRow = document.createElement('tr');
+          detRow.id = 'det-row-' + p.id;
+          detRow.style.display = 'none';
+          detRow.innerHTML = `<td colspan="7"><div class="detalle-panel" id="det-panel-${p.id}">Cargando...</div></td>`;
+          tbody.appendChild(detRow);
+        });
+
+        tabla.style.display = 'block';
+
+      } catch (e) {
+        loading.style.display = 'none';
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        msg.textContent = '❌ Error al cargar: ' + e.message;
+      }
+    }
+
+    function marcarCambio(id) {
+      document.getElementById('btn-save-' + id).style.display = 'inline-block';
+    }
+
+    async function guardarEstado(id) {
+      const select = document.getElementById('estado-' + id);
+      const nuevoEstado = select.value;
+      const btn = document.getElementById('btn-save-' + id);
+      const msg = document.getElementById('mensaje');
+
+      try {
+        // CORREGIDO: Usar POST en vez de PUT para evitar 405
+        const response = await fetch('/api/pedidos/' + id + '/estado', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ estado: nuevoEstado })
+        });
+
+        if (response.ok) {
+          btn.style.display = 'none';
+          msg.className = 'alert alert-success';
+          msg.style.display = 'block';
+          msg.textContent = '✅ Estado del pedido #' + id + ' actualizado a ' + nuevoEstado;
+        } else {
+          const error = await response.text();
+          msg.className = 'alert alert-error';
+          msg.style.display = 'block';
+          msg.textContent = '❌ Error: ' + error;
+        }
+      } catch (e) {
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        msg.textContent = '❌ Error: ' + e.message;
+      }
+    }
+
+    async function eliminarPedido(id) {
+      if (!confirm('¿Eliminar pedido #' + id + '?')) return;
+
+      const msg = document.getElementById('mensaje');
+      try {
+        const response = await fetch('/api/pedidos/' + id, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          msg.className = 'alert alert-success';
+          msg.style.display = 'block';
+          msg.textContent = '✅ Pedido #' + id + ' eliminado';
+          cargarPedidos();
+        } else {
+          const error = await response.text();
+          msg.className = 'alert alert-error';
+          msg.style.display = 'block';
+          msg.textContent = '❌ Error: ' + error;
+        }
+      } catch (e) {
+        msg.className = 'alert alert-error';
+        msg.style.display = 'block';
+        msg.textContent = '❌ Error: ' + e.message;
+      }
+    }
+
+    async function verDetalle(id) {
+      const detRow = document.getElementById('det-row-' + id);
+      const panel = document.getElementById('det-panel-' + id);
+
+      if (detRow.style.display === 'table-row') {
+        detRow.style.display = 'none';
+        return;
+      }
+
+      document.querySelectorAll('tr[id^="det-row-"]').forEach(r => r.style.display = 'none');
+
+      detRow.style.display = 'table-row';
+      panel.innerHTML = 'Cargando...';
+
+      try {
+        const response = await fetch('/api/pedidos/' + id);
+        if (!response.ok) throw new Error('Error al obtener detalle');
+
+        const pedido = await response.json();
+        let html = '<strong>Detalle del Pedido #' + id + '</strong><br><br>';
+
+        if (pedido.detalles && pedido.detalles.length > 0) {
+          html += '<div style="display:grid; gap:8px;">';
+          let total = 0;
+          pedido.detalles.forEach(d => {
+            const precio = d.precioUnitario || 0;
+            const cant = d.cantidad || 1;
+            const sub = precio * cant;
+            total += sub;
+            const nombrePlato = d.plato ? d.plato.nombre : 'Plato #' + d.id;
+            html += `<div class="detalle-item">
+              <span><strong>${nombrePlato}</strong> ${d.notas ? '(📝 ' + d.notas + ')' : ''}</span>
+              <span>${cant} x S/ ${precio.toFixed(2)} = <strong>S/ ${sub.toFixed(2)}</strong></span>
+            </div>`;
+          });
+          html += `</div><br><div style="text-align:right; font-size:1.1rem; color:#27ae60;">
+            <strong>TOTAL: S/ ${total.toFixed(2)}</strong>
+          </div>`;
+        } else {
+          html += '<span style="color:#e74c3c;">⚠️ Este pedido no tiene platos/bebidas registrados.</span>';
+        }
+
+        panel.innerHTML = html;
+      } catch (e) {
+        panel.innerHTML = '<span style="color:#e74c3c;">Error: ' + e.message + '</span>';
+      }
+    }
+
+    function irAFactura(id) {
+      sessionStorage.setItem('pedidoPreseleccionado', id);
+      location.href = 'registrar-venta.html';
+    }
+
+    cargarPedidos();
+  </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte de Mozos</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { margin:0; font-family:Arial,sans-serif; background:linear-gradient(to right,#ff7e5f,#feb47b);}
+    .login-box { max-width:900px; margin:40px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+    header { text-align:center; }
+    .logo { width:80px; margin-bottom:10px; }
+    h1 { margin-bottom:15px; }
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+    th { background:#f2f2f2; }
+    textarea { width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
+    .btn-guardar { margin-top:20px; padding:10px 20px; background:#4caf50; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+    .btn-guardar:hover { background:#388e3c; }
+    .registro-link { margin-top:20px; text-align:center; }
+    .registro-link a { text-decoration:none; color:#2196f3; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>📑 Reporte de Mozos</h1>
+    </header>
+
+    <h2>Generar reporte de desempeño</h2>
+    <form id="reporteForm">
+      <table>
+        <tr>
+          <th>ID Mozo</th>
+          <th>Nombre</th>
+          <th>Asistencias</th>
+          <th>Faltas</th>
+          <th>Tardanzas</th>
+          <th>Observaciones del Jefe</th>
+        </tr>
+        <!-- Ejemplo de datos -->
+        <tr>
+          <td>M001</td>
+          <td>Carlos Ramírez</td>
+          <td>20</td>
+          <td>1</td>
+          <td>1</td>
+          <td><textarea name="obsM001" placeholder="Escribe observaciones..."></textarea></td>
+        </tr>
+        <tr>
+          <td>M002</td>
+          <td>José Pérez</td>
+          <td>18</td>
+          <td>2</td>
+          <td>2</td>
+          <td><textarea name="obsM002" placeholder="Escribe observaciones..."></textarea></td>
+        </tr>
+        <tr>
+          <td>M003</td>
+          <td>Juan López</td>
+          <td>22</td>
+          <td>0</td>
+          <td>0</td>
+          <td><textarea name="obsM003" placeholder="Escribe observaciones..."></textarea></td>
+        </tr>
+      </table>
+
+      <button type="submit" class="btn-guardar">Enviar Reporte al Administrador</button>
+    </form>
+
+    <p class="registro-link">
+      <a href="jefe.html">⬅ Volver al Panel del Jefe de Mozos</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById("reporteForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("✅ Reporte generado y enviado al Administrador correctamente.");
+      window.location.href = "jefe.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clientes Frecuentes</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    table { width:100%; border-collapse:collapse; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:10px; text-align:center; }
+    th { background:#f2f2f2; }
+    .acciones button { margin:0 5px; padding:6px 12px; border:none; border-radius:5px; cursor:pointer; }
+    .modificar { background:#2196f3; color:#fff; }
+    .modificar:hover { background:#1976d2; }
+    .eliminar { background:#e53935; color:#fff; }
+    .eliminar:hover { background:#c62828; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <header>
+      <img src="imagenes/logo.png" alt="Logo Restaurante" class="logo">
+      <h1>👥 Clientes Frecuentes</h1>
+    </header>
+
+    <h2>Listado de Clientes Frecuentes</h2>
+    <p>El administrador puede ver, modificar o eliminar clientes frecuentes.</p>
+
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Visitas</th>
+        <th>Acciones</th>
+      </tr>
+      <!-- Ejemplo de clientes -->
+      <tr>
+        <td>C001</td>
+        <td>Juan Pérez</td>
+        <td>juanperez@gmail.com</td>
+        <td>999888777</td>
+        <td>12</td>
+        <td class="acciones">
+          <button class="modificar" onclick="location.href='clientes-modificar.html?id=C001'">Modificar</button>
+          <button class="eliminar" onclick="location.href='clientes-eliminar.html?id=C001'">Eliminar</button>
+        </td>
+      </tr>
+      <tr>
+        <td>C002</td>
+        <td>María López</td>
+        <td>marialopez@gmail.com</td>
+        <td>988776655</td>
+        <td>8</td>
+        <td class="acciones">
+          <button class="modificar" onclick="location.href='clientes-modificar.html?id=C002'">Modificar</button>
+          <button class="eliminar" onclick="location.href='clientes-eliminar.html?id=C002'">Eliminar</button>
+        </td>
+      </tr>
+    </table>
+
+    <p class="registro-link">
+      <a href="admin.html">⬅ Volver al Panel Administrador</a>
+    </p>
+  </div>
+</body>
+</html>

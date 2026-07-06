@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Modificar Trabajador</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="login-box">
+    <h1>✏️ Modificar Trabajador</h1>
+    <form action="/trabajadores/modificar" method="post">
+      <label>ID del Trabajador:</label>
+      <input type="text" name="id" placeholder="Ejemplo: T001" required>
+
+      <label>Nuevos Nombres:</label>
+      <input type="text" name="nombres" required>
+
+      <label>Nuevos Apellidos:</label>
+      <input type="text" name="apellidos" required>
+
+      <label>Nuevo Rol:</label>
+      <select name="rol" required>
+        <option value="MOZO">Mozo</option>
+        <option value="ADMIN">Administrador</option>
+        <option value="JEFE_MOZOS">Jefe de Mozos</option>
+      </select>
+
+      <button type="submit">Guardar Cambios</button>
+    </form>
+    <p><a href="trabajadores.html">⬅ Volver a Gestión de Trabajadores</a></p>
+  </div>
+</body>
+</html>
