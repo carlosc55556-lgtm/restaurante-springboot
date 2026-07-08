@@ -1,162 +1,149 @@
 package com.restaurante.config;
 
-import com.restaurante.entity.Rol;
-import com.restaurante.entity.Usuario;
-import com.restaurante.repository.RolRepository;
-import com.restaurante.repository.UsuarioRepository;
+import com.restaurante.entity.Plato;
+import com.restaurante.repository.PlatoRepository;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class DataInitializer {
 
     @Bean
     CommandLineRunner init(
-            RolRepository rolRepository,
-            UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder
+            PlatoRepository platoRepository
     ) {
 
         return args -> {
 
-            // =========================
-            // CREAR ROLES
-            // =========================
-
-            Rol admin = crearRol(
-                    rolRepository,
-                    "ADMIN",
-                    "Administrador del sistema"
-            );
-
-            Rol jefeMozo = crearRol(
-                    rolRepository,
-                    "JEFE_MOZO",
-                    "Jefe de mozos"
-            );
-
-            Rol mozo = crearRol(
-                    rolRepository,
-                    "MOZO",
-                    "Mozo del restaurante"
-            );
-
-            Rol cliente = crearRol(
-                    rolRepository,
-                    "CLIENTE",
-                    "Cliente del restaurante"
-            );
-
-
-            // =========================
-            // CREAR USUARIOS
-            // Password para todos: 123456
-            // =========================
-
-            crearUsuario(
-                    usuarioRepository,
-                    passwordEncoder,
-                    "Carlos",
-                    "Administrador",
-                    "admin@gmail.com",
-                    "admin",
-                    admin
-            );
-
-
-            crearUsuario(
-                    usuarioRepository,
-                    passwordEncoder,
-                    "Juan",
-                    "Jefe",
-                    "jefe@gmail.com",
-                    "jefe",
-                    jefeMozo
-            );
-
-
-            crearUsuario(
-                    usuarioRepository,
-                    passwordEncoder,
-                    "Pedro",
-                    "Mozo",
-                    "mozo@gmail.com",
-                    "mozo",
-                    mozo
-            );
-
-
-            crearUsuario(
-                    usuarioRepository,
-                    passwordEncoder,
-                    "Ana",
-                    "Cliente",
-                    "cliente@gmail.com",
-                    "cliente",
-                    cliente
-            );
+            crearPlatos(platoRepository);
 
         };
     }
 
 
-    private Rol crearRol(
-            RolRepository rolRepository,
-            String nombre,
-            String descripcion
+    private void crearPlatos(
+            PlatoRepository platoRepository
     ) {
 
-        return rolRepository.findByNombre(nombre)
-                .orElseGet(() -> {
+        if (platoRepository.count() == 0) {
 
-                    Rol rol = new Rol();
 
-                    rol.setNombre(nombre);
-                    rol.setDescripcion(descripcion);
+            platoRepository.save(crearPlato(
+                    "Lomo Saltado",
+                    "Carne de res salteada con cebolla, tomate, papas fritas y arroz blanco",
+                    25.00,
+                    "Plato de fondo",
+                    50
+            ));
 
-                    return rolRepository.save(rol);
-                });
+
+            platoRepository.save(crearPlato(
+                    "Ají de Gallina",
+                    "Pollo deshilachado con crema de ají amarillo acompañado de arroz blanco",
+                    18.00,
+                    "Plato de fondo",
+                    40
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Ceviche Peruano",
+                    "Pescado fresco marinado con limón, cebolla roja, ají y camote",
+                    22.00,
+                    "Plato de fondo",
+                    35
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Arroz con Pollo",
+                    "Arroz verde con culantro acompañado de presa de pollo y salsa criolla",
+                    16.00,
+                    "Plato de fondo",
+                    45
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Tallarines Verdes",
+                    "Pasta con salsa de albahaca peruana acompañada de bistec",
+                    17.00,
+                    "Plato de fondo",
+                    30
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Causa Rellena",
+                    "Papa amarilla sazonada rellena con pollo y mayonesa",
+                    15.00,
+                    "Entrada",
+                    25
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Anticuchos",
+                    "Brochetas de corazón de res marinadas con especias peruanas",
+                    14.00,
+                    "Parrilla",
+                    30
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Papa a la Huancaína",
+                    "Papa sancochada con crema de ají amarillo, queso y leche",
+                    10.00,
+                    "Entrada",
+                    40
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Chicha Morada",
+                    "Bebida tradicional peruana preparada con maíz morado y frutas",
+                    6.00,
+                    "Bebida",
+                    60
+            ));
+
+
+            platoRepository.save(crearPlato(
+                    "Limonada",
+                    "Limonada natural preparada con limón fresco y azúcar",
+                    5.00,
+                    "Bebida",
+                    60
+            ));
+
+
+            System.out.println("Platos iniciales creados correctamente");
+
+        }
+
     }
 
 
-    private void crearUsuario(
-            UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder,
+    private Plato crearPlato(
             String nombre,
-            String apellido,
-            String email,
-            String username,
-            Rol rol
+            String descripcion,
+            Double precio,
+            String categoria,
+            Integer stock
     ) {
 
-        if (usuarioRepository.findByUsername(username).isEmpty()) {
+        Plato plato = new Plato();
 
-            Usuario usuario = new Usuario();
+        plato.setNombre(nombre);
+        plato.setDescripcion(descripcion);
+        plato.setPrecio(precio);
+        plato.setCategoria(categoria);
+        plato.setStock(stock);
+        plato.setDisponible(true);
 
-            usuario.setNombre(nombre);
-            usuario.setApellido(apellido);
-            usuario.setEmail(email);
-            usuario.setUsername(username);
-
-            usuario.setPassword(
-                    passwordEncoder.encode("123456")
-            );
-
-            usuario.setEnabled(true);
-
-            usuario.setRol(rol);
-
-            usuarioRepository.save(usuario);
-
-            System.out.println(
-                    "Usuario creado: "
-                    + username
-                    + " | Rol: "
-                    + rol.getNombre()
-            );
-        }
+        return plato;
     }
 }
