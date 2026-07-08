@@ -22,7 +22,10 @@ public class DataInitializer {
 
         return args -> {
 
-            // Crear roles
+            // =========================
+            // CREAR ROLES
+            // =========================
+
             Rol admin = crearRol(
                     rolRepository,
                     "ADMIN",
@@ -48,7 +51,11 @@ public class DataInitializer {
             );
 
 
-            // Crear usuarios
+            // =========================
+            // CREAR USUARIOS
+            // Password para todos: 123456
+            // =========================
+
             crearUsuario(
                     usuarioRepository,
                     passwordEncoder,
@@ -132,19 +139,23 @@ public class DataInitializer {
             usuario.setNombre(nombre);
             usuario.setApellido(apellido);
             usuario.setEmail(email);
-            usuario.setUsuario(username);
+            usuario.setUsername(username);
 
-            // Contraseña: 123456
             usuario.setPassword(
                     passwordEncoder.encode("123456")
             );
+
+            usuario.setEnabled(true);
 
             usuario.setRol(rol);
 
             usuarioRepository.save(usuario);
 
             System.out.println(
-                    "Usuario creado: " + username + " - " + rol.getNombre()
+                    "Usuario creado: "
+                    + username
+                    + " | Rol: "
+                    + rol.getNombre()
             );
         }
     }
