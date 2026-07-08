@@ -72,40 +72,40 @@ public class UsuarioService {
 
     // ========== REGISTRAR TRABAJADOR ==========
     @Transactional
-    public Usuario registrarTrabajador(String username, String password, String email,
-                                         String nombre, String apellido, String cargo,
-                                         String dni, String telefono, String rolNombre) {
-        
-        if (usuarioRepository.existsByUsername(username)) {
-            throw new RuntimeException("El usuario ya existe");
-        }
+public Usuario registrarTrabajador(String username, String password, String email,
+                                     String nombre, String apellido, String cargo,
+                                     String dni, String telefono, String rolNombre) {
 
-        Rol rol = rolRepository.findByNombre(rolNombre)
-            .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + rolNombre));
+    if (usuarioRepository.existsByUsername(username)) {
+        throw new RuntimeException("El usuario ya existe");
+    }
 
-        Usuario usuario = new Usuario();
-        usuario.setUsername(username);
-        usuario.setPassword(passwordEncoder.encode(password));
-        usuario.setEmail(email);
-        usuario.setEnabled(true);
-        usuario.setRol(rol);
-        usuario.setNombre(nombre);
-        usuario.setApellido(apellido);
+    Rol rol = rolRepository.findByNombre(rolNombre)
+        .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + rolNombre));
 
-        Usuario guardado = usuarioRepository.save(usuario);
+    Usuario usuario = new Usuario();
+    usuario.setUsername(username);
+    usuario.setPassword(passwordEncoder.encode(password));
+    usuario.setEmail(email);
+    usuario.setEnabled(true);
+    usuario.setRol(rol);
+    usuario.setNombre(nombre);
+    usuario.setApellido(apellido);
 
-        Trabajador trabajador = new Trabajador();
-        trabajador.setId(guardado.getId());
-        trabajador.setUsuario(guardado);
-        trabajador.setNombre(nombre);
-        trabajador.setApellido(apellido);
-        trabajador.setCargo(cargo);
-        trabajador.setDni(dni);
-        trabajador.setTelefono(telefono);
-        trabajador.setPuesto(rolNombre);
+    Usuario guardado = usuarioRepository.save(usuario);
 
-        trabajadorRepository.save(trabajador);
-        return guardado;
+    Trabajador trabajador = new Trabajador();
+    trabajador.setUsuario(guardado); //
+    trabajador.setNombre(nombre);
+    trabajador.setApellido(apellido);
+    trabajador.setCargo(cargo);
+    trabajador.setDni(dni);
+    trabajador.setTelefono(telefono);
+    trabajador.setPuesto(rolNombre);
+
+    trabajadorRepository.save(trabajador);
+
+    return guardado;
     }
 
     // ========== LOGIN (opcional, si lo usas) ==========

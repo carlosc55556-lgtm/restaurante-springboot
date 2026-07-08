@@ -4,8 +4,11 @@ import com.restaurante.entity.Trabajador;
 import com.restaurante.service.TrabajadorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/trabajadores")
@@ -55,5 +58,42 @@ public class TrabajadorController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/exportar")
+    public void exportarExcel(HttpServletResponse response) throws IOException {
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=trabajadores.xlsx");
+
+        List<Trabajador> trabajadores = trabajadorService.listarTrabajadores();
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Trabajadores");
+
+        // Header
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("ID");
+        header.createCell(1).setCellValue("Nombres");
+        header.createCell(2).setCellValue("Apellidos");
+        header.createCell(3).setCellValue("Cargo");
+        header.createCell(4).setCellValue("DNI");
+        header.createCell(5).setCellValue("Teléfono");
+
+        int rowNum = 1;
+
+        for (Trabajador t : trabajadores) {
+            Row row = sheet.createRow(rowNum++);
+
+            row.createCell(0).setCellValue(t.getId() != null ? t.getId() : 0);
+            row.createCell(1).setCellValue(t.getNombre() != null ? t.getNombre() : "");
+            row.createCell(2).setCellValue(t.getApellido() != null ? t.getApellido() : "");
+            row.createCell(3).setCellValue(t.getCargo() != null ? t.getCargo() : "");
+            row.createCell(4).setCellValue(t.getDni() != null ? t.getDni() : "");
+            row.createCell(5).setCellValue(t.getTelefono() != null ? t.getTelefono() : "");
+        }
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
     }
 }

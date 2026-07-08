@@ -4,16 +4,120 @@
   <meta charset="UTF-8">
   <title>Lista de Trabajadores</title>
   <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+}
+
+/* Contenedor más ancho */
+.login-box {
+  width: 95%;              /* 👈 ocupa casi toda la pantalla */
+  max-width: 1400px;       /* 👈 más ancho en pantallas grandes */
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+}
+
+/* Tabla full width */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* celdas */
+th, td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* encabezado */
+
+/* SOLO scroll en pantallas pequeñas */
+.tabla-container {
+  width: 100%;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .login-box {
+    width: 98%;
+    padding: 10px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;  /* 👈 scroll SOLO aquí */
+    white-space: nowrap;
+  }
+}
+  </style>
 </head>
+
 <body>
   <div class="login-box">
     <h1>👨‍🍳 Lista de Trabajadores</h1>
-    <table>
-      <tr><th>ID</th><th>Nombres</th><th>Apellidos</th><th>Rol</th></tr>
-      <tr><td>T001</td><td>Juan</td><td>Pérez</td><td>Mozo</td></tr>
-      <tr><td>T002</td><td>María</td><td>López</td><td>Administradora</td></tr>
-    </table>
+
+    <!-- BOTÓN EXPORTAR EXCEL -->
+    <a href="/api/trabajadores/exportar" class="btn-excel">
+      📊 Exportar Excel
+    </a>
+
+    <div class="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Cargo</th>
+            <th>DNI</th>
+            <th>Teléfono</th>
+          </tr>
+        </thead>
+
+        <tbody id="tablaTrabajadores">
+          <!-- datos dinámicos -->
+        </tbody>
+      </table>
+    </div>
+
     <p><a href="trabajadores.html">⬅ Volver a Gestión de Trabajadores</a></p>
   </div>
+
+  <script>
+    async function cargarTrabajadores() {
+      try {
+        const response = await fetch("/api/trabajadores");
+
+        const data = await response.json();
+
+        const tabla = document.getElementById("tablaTrabajadores");
+        tabla.innerHTML = "";
+
+        data.forEach(t => {
+          tabla.innerHTML += `
+            <tr>
+              <td>${t.id ?? ""}</td>
+              <td>${t.nombre ?? ""}</td>
+              <td>${t.apellido ?? ""}</td>
+              <td>${t.cargo ?? ""}</td>
+              <td>${t.dni ?? ""}</td>
+              <td>${t.telefono ?? ""}</td>
+            </tr>
+          `;
+        });
+
+      } catch (error) {
+        console.error("Error cargando trabajadores:", error);
+      }
+    }
+
+    cargarTrabajadores();
+  </script>
 </body>
 </html>
