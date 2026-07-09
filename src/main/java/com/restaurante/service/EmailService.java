@@ -1,77 +1,93 @@
 package com.restaurante.service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
-    @Value("${spring.mail.username}")
-    private String fromEmail;
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
+
+    @Value("${brevo.sender.email}")
+    private String senderEmail;
+
+    @Value("${brevo.sender.name}")
+    private String senderName;
 
     // Método para comprobante de venta (ya lo tenías)
     public void enviarComprobanteVenta(String emailCliente, String nombreCliente,
                                         String numeroComprobante, byte[] pdfBytes) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        String asunto = "Comprobante de Pago - " + numeroComprobante;
 
-            helper.setFrom(fromEmail);
-            helper.setTo(emailCliente);
-            helper.setSubject("Comprobante de Pago - " + numeroComprobante);
-            
-            String mensajeHtml = "<html><body style='font-family: Arial, sans-serif;'>" +
+        String mensajeHtml = "<html><body style='font-family: Arial, sans-serif;'>" +
                 "<h2 style='color: #2196f3;'>¡Gracias por tu compra!</h2>" +
                 "<p>Hola <strong>" + nombreCliente + "</strong>,</p>" +
                 "<p>Adjunto encontrarás tu comprobante de pago <strong>" + numeroComprobante + "</strong>.</p>" +
                 "<p>Esperamos verte pronto nuevamente.</p><br>" +
                 "<p style='color: #888;'>Restaurante Eclipse - Sistema Web</p>" +
                 "</body></html>";
-            
-            helper.setText(mensajeHtml, true);
-            helper.addAttachment("Comprobante_" + numeroComprobante + ".pdf", 
-                new ByteArrayResource(pdfBytes));
 
-            mailSender.send(message);
-            
-        } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar email: " + e.getMessage(), e);
-        }
+        enviarConAdjunto(emailCliente, asunto, mensajeHtml, pdfBytes,
+                "Comprobante_" + numeroComprobante + ".pdf");
     }
 
-    // ← NUEVO: Método genérico para enviar recibo
+    // Método genérico para enviar recibo
     public void enviarRecibo(String emailCliente, String asunto, byte[] pdfBytes, String nombreArchivo) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setFrom(fromEmail);
-            helper.setTo(emailCliente);
-            helper.setSubject(asunto);
-            
-            String mensajeHtml = "<html><body style='font-family: Arial, sans-serif;'>" +
+        String mensajeHtml = "<html><body style='font-family: Arial, sans-serif;'>" +
                 "<h2 style='color: #2196f3;'>¡Gracias por tu visita!</h2>" +
                 "<p>Adjunto encontrarás tu recibo.</p>" +
                 "<p>Esperamos verte pronto nuevamente.</p><br>" +
                 "<p style='color: #888;'>Restaurante Eclipse - Sistema Web</p>" +
                 "</body></html>";
-            
-            helper.setText(mensajeHtml, true);
-            helper.addAttachment(nombreArchivo, new ByteArrayResource(pdfBytes));
 
-            mailSender.send(message);
-            
-        } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar recibo: " + e.getMessage(), e);
+        enviarConAdjunto(emailCliente, asunto, mensajeHtml, pdfBytes, nombreArchivo);
+    }
+
+    // Lógica común: arma el JSON y llama a la API de Brevo
+    private void enviarConAdjunto(String emailDestino, String asunto, String htmlContent,
+                                   byte[] pdfBytes, String nombreArchivo) {
+        try {
+            String pdfBase64 = Base64.getEncoder().encodeToString(pdfBytes);
+
+            Map<String, Object> body = new LinkedHashMap<>();
+            body.put("sender", Map.of("name", senderName, "email", senderEmail));
+            body.put("to", List.of(Map.of("email", emailDestino)));
+            body.put("subject", asunto);
+            body.put("htmlContent", htmlContent);
+            body.put("attachment", List.of(Map.of("content", pdfBase64, "name", nombreArchivo)));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("api-key", brevoApiKey);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+            HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(body), headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(BREVO_API_URL, request, String.class);
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("Brevo respondió con error: " + response.getBody());
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al enviar email vía Brevo: " + e.getMessage(), e);
         }
     }
 }
