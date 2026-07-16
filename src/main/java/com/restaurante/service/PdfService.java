@@ -104,10 +104,29 @@ public class PdfService {
             PdfPTable tabla = new PdfPTable(4);
             tabla.setWidthPercentage(100);
 
-            tabla.addCell("Producto");
-            tabla.addCell("Cantidad");
-            tabla.addCell("Precio");
-            tabla.addCell("Subtotal");
+            Font headerFont = new Font(Font.HELVETICA, 11, Font.BOLD);
+
+            Color pastel = new Color(210, 235, 230);
+
+            PdfPCell productoHeader = new PdfPCell(new Phrase("Producto", headerFont));
+            PdfPCell cantidadHeader = new PdfPCell(new Phrase("Cantidad", headerFont));
+            PdfPCell precioHeader = new PdfPCell(new Phrase("Precio", headerFont));
+            PdfPCell subtotalHeader = new PdfPCell(new Phrase("Subtotal", headerFont));
+
+            productoHeader.setBackgroundColor(pastel);
+            cantidadHeader.setBackgroundColor(pastel);
+            precioHeader.setBackgroundColor(pastel);
+            subtotalHeader.setBackgroundColor(pastel);
+
+            productoHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cantidadHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+            precioHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+            subtotalHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+            tabla.addCell(productoHeader);
+            tabla.addCell(cantidadHeader);
+            tabla.addCell(precioHeader);
+            tabla.addCell(subtotalHeader);
 
 
             if (venta.getPedido() != null) {
