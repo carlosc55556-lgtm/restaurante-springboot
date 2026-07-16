@@ -10,6 +10,11 @@ import com.restaurante.entity.Pedido;
 
 import com.lowagie.text.pdf.PdfPTable;
 
+import com.lowagie.text.pdf.PdfPCell;
+import java.awt.Color;
+
+
+
 import java.io.ByteArrayOutputStream;
 
 @Service
