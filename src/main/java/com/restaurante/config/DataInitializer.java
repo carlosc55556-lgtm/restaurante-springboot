@@ -6,19 +6,26 @@ import com.restaurante.repository.PlatoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.restaurante.entity.Pedido;
+import com.restaurante.entity.Venta;
+
+import com.restaurante.repository.PedidoRepository;
+import com.restaurante.repository.VentaRepository;
 
 @Configuration
 public class DataInitializer {
 
     @Bean
     CommandLineRunner init(
-            PlatoRepository platoRepository
+            PlatoRepository platoRepository,
+        PedidoRepository pedidoRepository,
+        VentaRepository ventaRepository
     ) {
 
         return args -> {
 
             crearPlatos(platoRepository);
-
+            crearVentasDemo();
         };
     }
 
