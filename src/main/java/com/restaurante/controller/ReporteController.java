@@ -58,7 +58,8 @@
             reporte.put("totalVentas", String.format("S/ %.2f", totalVentas));
             reporte.put("totalIGV", String.format("S/ %.2f", totalIGV));
             reporte.put("promedioVenta", ventas.isEmpty() ? 0 : String.format("S/ %.2f", totalVentas / ventas.size()));
-            reporte.put("ventas", ventas);
+            //momentaneo reporte.put("ventas", ventas);
+
 
             return ResponseEntity.ok(reporte);
         }
